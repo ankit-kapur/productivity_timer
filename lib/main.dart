@@ -2,14 +2,10 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:productivity_timer/bottom_panel.dart';
+import 'package:productivity_timer/config/config.dart';
 import 'package:productivity_timer/dao/timer_state.dart';
 import 'package:productivity_timer/side_drawer.dart';
 
-/// ---------- Configuration ----------- ///
-const double BUTTON_HORIZ_PADDING = 20.0;
-const double TIMER_FONT_SIZE = 85;
-const int INITIAL_TIME_MSEC = 65000;
-const int TIMER_REFRESH_RATE_MSEC = 1000;
 
 void main() => runApp(MyApp());
 
@@ -19,10 +15,46 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+
+          /// Not being used. BG is an image now.
+          canvasColor: Colors.white,
+
+          /// Top panel
           primarySwatch: Colors.green,
-          accentColor: Colors.lightGreen,
-          backgroundColor: Colors.amber,
-          textTheme: TextTheme(display1: TextStyle(fontSize: TIMER_FONT_SIZE))),
+
+          // Buttons
+          accentColor: Colors.green,
+          backgroundColor: Colors.green,
+          textTheme: TextTheme(
+
+              /// Timer color
+              display1: TextStyle(
+            fontFamily: 'Impact',
+            fontSize: Configuration.TIMER_FONT_SIZE,
+            color: Configuration.TIMER_COLOR,
+            fontWeight: FontWeight.w400,
+
+            /// Outline
+//            shadows: [
+//              Shadow(
+//                  // bottomLeft
+//                  offset: Offset(-1 * Configuration.BORDER_WIDTH_TIMER, -1 * Configuration.BORDER_WIDTH_TIMER),
+//                  color: Configuration.BORDER_COLOR_TIMER),
+//              Shadow(
+//                  // bottomRight
+//                  offset: Offset(Configuration.BORDER_WIDTH_TIMER, -1 * Configuration.BORDER_WIDTH_TIMER),
+//                  color: Configuration.BORDER_COLOR_TIMER),
+//              Shadow(
+//                  // topRight
+//                  offset: Offset(Configuration.BORDER_WIDTH_TIMER, Configuration.BORDER_WIDTH_TIMER),
+//                  color: Configuration.BORDER_COLOR_TIMER),
+//              Shadow(
+//                  // topLeft
+//                  offset: Offset(-1 * Configuration.BORDER_WIDTH_TIMER, Configuration.BORDER_WIDTH_TIMER),
+//                  color: Configuration.BORDER_COLOR_TIMER),
+//            ],
+
+          ))),
       home: MyHomePage(title: 'Jarvis timer'),
     );
   }
@@ -79,49 +111,41 @@ class MainDisplay extends StatefulWidget {
 }
 
 class _MainDisplayState extends State<MainDisplay> {
-  TimerState timerState = new TimerState(INITIAL_TIME_MSEC);
+  TimerState timerState = new TimerState();
   Timer timer;
   int elapsedMilliseconds;
 
   @override
   void initState() {
-       timer = new Timer.periodic(
-            new Duration(milliseconds: TIMER_REFRESH_RATE_MSEC), callback);
-       super.initState();
+    timer = new Timer.periodic(
+        new Duration(milliseconds: Configuration.TIMER_REFRESH_RATE_MSEC), callback);
+    super.initState();
   }
 
   @override
   void dispose() {
-       timer?.cancel();
-       timer = null;
-       super.dispose();
+    timer?.cancel();
+    timer = null;
+    super.dispose();
   }
 
   void callback(Timer timer) {
-
-       setState(() {
-         elapsedMilliseconds = timerState.stopwatch.elapsedMilliseconds;
-       });
-
-//       if (elapsedMilliseconds != timerState.stopwatch.elapsedMilliseconds) {
-//            elapsedMilliseconds = timerState.stopwatch.elapsedMilliseconds;
-//            final int hundreds = (elapsedMilliseconds / 10).truncate();
-//            final int seconds = (hundreds / 100).truncate();
-//            final int minutes = (seconds / 60).truncate();
-//            final ElapsedTime elapsedTime = new ElapsedTime(
-//                 hundreds: hundreds,
-//                 seconds: seconds,
-//                 minutes: minutes,
-//            );
-//            for (final listener in dependencies.timerListeners) {
-//                 listener(elapsedTime);
-//            }
-//       }
+    setState(() {
+      elapsedMilliseconds = timerState.stopwatch.elapsedMilliseconds;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: new BoxDecoration(
+        image: new DecorationImage(
+          image: new AssetImage(
+               "images/bg3.jpg"),
+          fit: BoxFit.cover,
+        ),
+      ),
+
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -168,7 +192,7 @@ class _MainDisplayState extends State<MainDisplay> {
           ),
           Padding(
             padding: EdgeInsets.all(20.0),
-            child: new BottomPanel(BUTTON_HORIZ_PADDING, timerState),
+            child: new BottomPanel(Configuration.BUTTON_HORIZ_PADDING, timerState),
           )
         ],
       ),
