@@ -1,7 +1,10 @@
+import 'package:flutter/animation.dart';
 import 'package:intl/intl.dart';
 import 'package:productivity_timer/config/config.dart';
 
 class TimerState {
+     AnimationController controller;
+
      Stopwatch stopwatch;
      int timerDurationMsec;
      int timeRemainingMsec;

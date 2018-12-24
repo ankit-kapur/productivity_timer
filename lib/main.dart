@@ -5,36 +5,37 @@ import 'package:productivity_timer/bottom_panel.dart';
 import 'package:productivity_timer/config/config.dart';
 import 'package:productivity_timer/dao/timer_state.dart';
 import 'package:productivity_timer/side_drawer.dart';
-
+import 'package:productivity_timer/timer/TimerPainter.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
+     @override
+     Widget build(BuildContext context) {
+          return MaterialApp(
+               title: 'Flutter Demo',
+               theme: ThemeData(
 
-          /// Not being used. BG is an image now.
-          canvasColor: Colors.white,
+                    /// Not being used. BG is an image now.
+                    canvasColor: Colors.white,
 
-          /// Top panel
-          primarySwatch: Colors.green,
+                    /// Top panel
+                    primarySwatch: Colors.green,
 
-          // Buttons
-          accentColor: Colors.green,
-          backgroundColor: Colors.green,
-          textTheme: TextTheme(
+                    // Buttons
+                    accentColor: Colors.green,
+                    indicatorColor: Colors.green,
+                    backgroundColor: Colors.deepPurple,
+                    textTheme: TextTheme(
 
-              /// Timer color
-              display1: TextStyle(
-            fontFamily: 'Impact',
-            fontSize: Configuration.TIMER_FONT_SIZE,
-            color: Configuration.TIMER_COLOR,
-            fontWeight: FontWeight.w400,
+                         /// Timer color
+                         display1: TextStyle(
+                              fontFamily: 'Impact',
+                              fontSize: Configuration.TIMER_FONT_SIZE,
+                              color: Configuration.TIMER_COLOR,
+                              fontWeight: FontWeight.w400,
 
-            /// Outline
+                              /// Outline
 //            shadows: [
 //              Shadow(
 //                  // bottomLeft
@@ -53,149 +54,209 @@ class MyApp extends StatelessWidget {
 //                  offset: Offset(-1 * Configuration.BORDER_WIDTH_TIMER, Configuration.BORDER_WIDTH_TIMER),
 //                  color: Configuration.BORDER_COLOR_TIMER),
 //            ],
-
-          ))),
-      home: MyHomePage(title: 'Jarvis timer'),
-    );
-  }
+                         ))),
+               home: MyHomePage(title: 'Jarvis Timekeeper'),
+          );
+     }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+     MyHomePage({Key key, this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+     // This widget is the home page of your application. It is stateful, meaning
+     // that it has a State object (defined below) that contains fields that affect
+     // how it looks.
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+     // This class is the configuration for the state. It holds the values (in this
+     // case the title) provided by the parent (in this case the App widget) and
+     // used by the build method of the State. Fields in a Widget subclass are
+     // always marked "final".
 
-  final String title;
+     final String title;
 
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
+     @override
+     _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: new MainDisplay(),
-      ),
-      drawer: new SideDrawer(),
-    );
-  }
+     @override
+     Widget build(BuildContext context) {
+          // This method is rerun every time setState is called, for instance as done
+          // by the _incrementCounter method above.
+          //
+          // The Flutter framework has been optimized to make rerunning build methods
+          // fast, so that you can just rebuild anything that needs updating rather
+          // than having to individually change instances of widgets.
+          return Scaffold(
+               appBar: AppBar(
+                    // Here we take the value from the MyHomePage object that was created by
+                    // the App.build method, and use it to set our appbar title.
+                    title: Text(widget.title),
+               ),
+               body: Center(
+                    // Center is a layout widget. It takes a single child and positions it
+                    // in the middle of the parent.
+                    child: new MainDisplay(),
+               ),
+               drawer: new SideDrawer(),
+          );
+     }
 }
 
 class MainDisplay extends StatefulWidget {
-  MainDisplay({Key key}) : super(key: key);
+     MainDisplay({Key key}) : super(key: key);
 
-  @override
-  _MainDisplayState createState() => _MainDisplayState();
+     @override
+     _MainDisplayState createState() => _MainDisplayState();
 }
 
-class _MainDisplayState extends State<MainDisplay> {
-  TimerState timerState = new TimerState();
-  Timer timer;
-  int elapsedMilliseconds;
+class _MainDisplayState extends State<MainDisplay>
+     with TickerProviderStateMixin {
+     TimerState timerState = new TimerState();
+     Timer timer;
+     int elapsedMilliseconds;
 
-  @override
-  void initState() {
-    timer = new Timer.periodic(
-        new Duration(milliseconds: Configuration.TIMER_REFRESH_RATE_MSEC), callback);
-    super.initState();
-  }
+     @override
+     void initState() {
+          super.initState();
+          timer = new Timer.periodic(
+               new Duration(milliseconds: Configuration.TIMER_REFRESH_RATE_MSEC),
+               callback);
 
-  @override
-  void dispose() {
-    timer?.cancel();
-    timer = null;
-    super.dispose();
-  }
+          timerState.controller = AnimationController(
+               vsync: this,
+               duration: Duration(seconds: timerState.getTimeRemainingInSeconds()),
+          );
+     }
 
-  void callback(Timer timer) {
-    setState(() {
-      elapsedMilliseconds = timerState.stopwatch.elapsedMilliseconds;
-    });
-  }
+     @override
+     void dispose() {
+          timer?.cancel();
+          timer = null;
+          super.dispose();
+     }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: new BoxDecoration(
-        image: new DecorationImage(
-          image: new AssetImage(
-               "images/bg3.jpg"),
-          fit: BoxFit.cover,
-        ),
-      ),
+     void callback(Timer timer) {
+          setState(() {
+               elapsedMilliseconds = timerState.stopwatch.elapsedMilliseconds;
+          });
+     }
 
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(20.0),
-            child: new Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
+     @override
+     Widget build(BuildContext context) {
+          return Container(
+               decoration: new BoxDecoration(
+                    image: new DecorationImage(
+                         image: new AssetImage("images/bg3.jpg"),
+                         fit: BoxFit.cover,
+                    ),
+               ),
+               child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                        timerState.getMinutes(),
-                        style: Theme.of(context).textTheme.display1,
-                      ),
+                         Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child: Stack(
+                                   children: <Widget>[
+                                        timerRing(),
+                                        timerDisplayWidget(),
+                                   ],
+                              ),
+                         ),
+                         Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child:
+                              new BottomPanel(Configuration.BUTTON_HORIZ_PADDING, timerState),
+                         )
                     ],
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
+               ),
+          );
+     }
+
+     String getTimerString() {
+          Duration duration = timerState.controller.duration * timerState.controller.value;
+          return '${(duration.inMinutes).toString().padLeft(2, '0')}'
+               ':'
+               '${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
+     }
+
+     timerDisplayWidget() {
+
+          return Align(
+               alignment: FractionalOffset.center,
+               child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                        ':',
-                        style: Theme.of(context).textTheme.display1,
-                      ),
+                         Text(
+                              "Count Down",
+                              style: Theme.of(context).textTheme.subhead,
+                         ),
+                         AnimatedBuilder(
+                              animation: timerState.controller,
+                              builder: (BuildContext context, Widget child) {
+                                   return new Text(
+                                        getTimerString(),
+                                        style: Theme.of(context).textTheme.display1,
+                                   );
+                              }),
                     ],
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        timerState.getSeconds(),
-                        style: Theme.of(context).textTheme.display1,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(20.0),
-            child: new BottomPanel(Configuration.BUTTON_HORIZ_PADDING, timerState),
-          )
-        ],
-      ),
-    );
-  }
+               ),
+          );
+
+//          return new Row(
+//               mainAxisAlignment: MainAxisAlignment.center,
+//               children: <Widget>[
+//                    Container(
+//                         padding: EdgeInsets.all(8.0),
+//                         child: Column(
+//                              children: <Widget>[
+//                                   Text(
+//                                        timerState.getMinutes(),
+//                                        style: Theme.of(context).textTheme.display1,
+//                                   ),
+//                              ],
+//                         ),
+//                    ),
+//                    Container(
+//                         padding: EdgeInsets.all(8.0),
+//                         child: Column(
+//                              children: <Widget>[
+//                                   Text(
+//                                        ':',
+//                                        style: Theme.of(context).textTheme.display1,
+//                                   ),
+//                              ],
+//                         ),
+//                    ),
+//                    Container(
+//                         padding: EdgeInsets.all(8.0),
+//                         child: Column(
+//                              children: <Widget>[
+//                                   Text(
+//                                        timerState.getSeconds(),
+//                                        style: Theme.of(context).textTheme.display1,
+//                                   ),
+//                              ],
+//                         ),
+//                    ),
+//               ],
+//          );
+     }
+
+     timerRing() {
+          return Positioned.fill(
+               child: AnimatedBuilder(
+                    animation: timerState.controller,
+                    builder: (BuildContext context, Widget child) {
+                         return new CustomPaint(
+                              painter: TimerPainter(
+                                   animation: timerState.controller,
+                                   backgroundColor: Colors.white,
+                                   doneColor: Theme.of(context).indicatorColor,
+                              ));
+                    },
+               ),
+          );
+     }
 }

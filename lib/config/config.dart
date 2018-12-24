@@ -18,7 +18,7 @@ class Configuration {
      static const TIMER_DURATIONS_MAP = {
           TimerType.chilli : 10,
           TimerType.lime : 15,
-          TimerType.pomodoro : 25,
+          TimerType.pomodoro : 1,
           TimerType.watermelon : 45,
      };
 }

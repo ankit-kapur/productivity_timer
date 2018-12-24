@@ -30,14 +30,19 @@ class _BottomPanelState extends State<BottomPanel> {
     return new Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+
         new Container(
           padding: EdgeInsets.all(horizontalPadding),
           child: FloatingActionButton(
-            onPressed: () => timerState.stopwatch.reset(),
+            onPressed: () => resetButtonPressed(),
             elevation: 5.0,
             tooltip: 'Restart timer',
             child: Icon(Icons.refresh),
-            shape: CircleBorder(side: BorderSide(color: Colors.white70)),
+               /// Border on the button
+               shape: CircleBorder(
+                    side: BorderSide(
+                         color: Colors.white,
+                         width: 2),),
           ),
         ),
 
@@ -54,7 +59,11 @@ class _BottomPanelState extends State<BottomPanel> {
                      width: 10,
                 ),
             ),
-            shape: CircleBorder(side: BorderSide(color: Colors.white70)),
+               /// Border on the button
+               shape: CircleBorder(
+                    side: BorderSide(
+                         color: Colors.white,
+                         width: 2),),
           ),
         ),
 
@@ -63,10 +72,15 @@ class _BottomPanelState extends State<BottomPanel> {
           child: FloatingActionButton(
             onPressed: () => startStopButtonPressed(),
             tooltip: 'Start/Stop timer',
-            child: timerState.stopwatch.isRunning
+            child: timerState.controller.isAnimating
                 ? Icon(Icons.pause)
                 : Icon(Icons.play_arrow),
-            shape: CircleBorder(side: BorderSide(color: Colors.white70)),
+
+               /// Border on the button
+               shape: CircleBorder(
+                    side: BorderSide(
+                         color: Colors.white,
+                    width: 2),),
           ),
         ),
       ],
@@ -74,6 +88,15 @@ class _BottomPanelState extends State<BottomPanel> {
   }
 
   startStopButtonPressed() {
+       if (timerState.controller.isAnimating)
+            timerState.controller.stop();
+       else {
+            timerState.controller.reverse(
+                 from: timerState.controller.value == 0.0
+                      ? 1.0
+                      : timerState.controller.value);
+       }
+
     setState(() {
       if (timerState.stopwatch.isRunning) {
         timerState.stopwatch.stop();
@@ -81,14 +104,13 @@ class _BottomPanelState extends State<BottomPanel> {
         timerState.stopwatch.start();
       }
     });
+
   }
 
   /// When the timer-type button is clicked
+  // TODO: A panel should open up and allow the user to pick a type.
   changeTimerType() {
        setState(() {
-
-            // TODO: A panel should open up and allow the user to pick a type.
-
             if (this.timerState.timerType == TimerType.pomodoro)
                  this.timerState.changeTimerType(TimerType.lime);
             else
@@ -102,5 +124,10 @@ class _BottomPanelState extends State<BottomPanel> {
 
   String getEnumValue(TimerType type) {
        return type.toString().substring(type.toString().indexOf(".") + 1);
+  }
+
+  resetButtonPressed() {
+       timerState.stopwatch.reset();
+       timerState.controller.reset();
   }
 }
