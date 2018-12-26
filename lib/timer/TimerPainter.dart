@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+import 'package:productivity_timer/config/config.dart';
 import 'package:productivity_timer/dao/timer_state.dart';
 
 class TimerPainter extends CustomPainter {
@@ -19,19 +20,39 @@ class TimerPainter extends CustomPainter {
      void paint(Canvas canvas, Size size) {
           Paint paint = Paint()
                ..color = backgroundColor
-               ..strokeWidth = 8.0
+               ..strokeWidth = Configuration.RING_WIDTH
                ..strokeCap = StrokeCap.round
                ..style = PaintingStyle.stroke;
 
-          canvas.drawCircle(size.center(Offset.zero), size.width / 2.0, paint);
+          /// Default ring
+          canvas.drawCircle(size.center(Offset.zero), Configuration.RING_RADIUS, paint);
+
+          /// Progress ring
           paint.color = doneColor;
           double progress = (1.0 - animation.value) * 2 * math.pi;
           canvas.drawArc(
-               // Offset.zero & size,
                Rect.fromCircle(
                     center: size.center(Offset.zero),
-                    radius: size.width / 2.0),
+                    radius: Configuration.RING_RADIUS),
                math.pi * 1.5, -progress, false, paint);
+
+
+          /// RING BORDERS
+          Paint borderPaint = Paint()
+               ..color = backgroundColor
+               ..strokeWidth = Configuration.RING_BORDER_WIDTH
+               ..strokeCap = StrokeCap.round
+               ..style = PaintingStyle.stroke;
+
+          /// Inner-border ring
+          canvas.drawCircle(size.center(Offset.zero),
+               Configuration.RING_RADIUS - Configuration.RING_BORDER_OFFSET - 2, borderPaint);
+
+          /// Outer-border ring
+          canvas.drawCircle(size.center(Offset.zero),
+               Configuration.RING_RADIUS + Configuration.RING_WIDTH - Configuration.RING_BORDER_OFFSET - 2,
+               borderPaint);
+
      }
 
      @override

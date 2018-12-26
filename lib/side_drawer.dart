@@ -4,6 +4,7 @@ class SideDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Drawer(
+         elevation: 6.0,
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[

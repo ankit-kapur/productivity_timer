@@ -14,47 +14,7 @@ class MyApp extends StatelessWidget {
      Widget build(BuildContext context) {
           return MaterialApp(
                title: 'Flutter Demo',
-               theme: ThemeData(
-
-                    /// Not being used. BG is an image now.
-                    canvasColor: Colors.white,
-
-                    /// Top panel
-                    primarySwatch: Colors.green,
-
-                    // Buttons
-                    accentColor: Colors.green,
-                    indicatorColor: Colors.green,
-                    backgroundColor: Colors.deepPurple,
-                    textTheme: TextTheme(
-
-                         /// Timer color
-                         display1: TextStyle(
-                              fontFamily: 'Impact',
-                              fontSize: Configuration.TIMER_FONT_SIZE,
-                              color: Configuration.TIMER_COLOR,
-                              fontWeight: FontWeight.w400,
-
-                              /// Outline
-//            shadows: [
-//              Shadow(
-//                  // bottomLeft
-//                  offset: Offset(-1 * Configuration.BORDER_WIDTH_TIMER, -1 * Configuration.BORDER_WIDTH_TIMER),
-//                  color: Configuration.BORDER_COLOR_TIMER),
-//              Shadow(
-//                  // bottomRight
-//                  offset: Offset(Configuration.BORDER_WIDTH_TIMER, -1 * Configuration.BORDER_WIDTH_TIMER),
-//                  color: Configuration.BORDER_COLOR_TIMER),
-//              Shadow(
-//                  // topRight
-//                  offset: Offset(Configuration.BORDER_WIDTH_TIMER, Configuration.BORDER_WIDTH_TIMER),
-//                  color: Configuration.BORDER_COLOR_TIMER),
-//              Shadow(
-//                  // topLeft
-//                  offset: Offset(-1 * Configuration.BORDER_WIDTH_TIMER, Configuration.BORDER_WIDTH_TIMER),
-//                  color: Configuration.BORDER_COLOR_TIMER),
-//            ],
-                         ))),
+               theme: Configuration.timerThemeData(),
                home: MyHomePage(title: 'Jarvis Timekeeper'),
           );
      }
@@ -91,14 +51,64 @@ class _MyHomePageState extends State<MyHomePage> {
                appBar: AppBar(
                     // Here we take the value from the MyHomePage object that was created by
                     // the App.build method, and use it to set our appbar title.
-                    title: Text(widget.title),
+                    title: Text(
+                         widget.title,
+                         style: TextStyle(
+                              fontSize: 24,
+                              fontFamily: 'FjallaOne'
+                         ),
+                    ),
                ),
                body: Center(
                     // Center is a layout widget. It takes a single child and positions it
                     // in the middle of the parent.
                     child: new MainDisplay(),
                ),
-               drawer: new SideDrawer(),
+
+               /// BUTTON IN THE CENTER
+               floatingActionButton: FloatingActionButton.extended(
+                    elevation: 6.0,
+                    backgroundColor: Colors.deepPurple,
+                    shape: RoundedRectangleBorder(
+                         borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                         side: BorderSide(
+                              color: Colors.white,
+                              width: 2),),
+                    icon: const Icon(Icons.golf_course),
+                    label: const Text(
+                         'Progress',
+                         style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: 'FjallaOne'
+                         ),
+                    ),
+
+                    onPressed: () {},
+
+               ),
+               floatingActionButtonLocation:
+                    FloatingActionButtonLocation.centerDocked,
+
+               /// BOTTOM NAV BAR
+               bottomNavigationBar: BottomAppBar(
+                    child: new Row(
+                         mainAxisSize: MainAxisSize.max,
+                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                         children: <Widget>[
+                              IconButton(
+                                   icon: Icon(Icons.menu),
+                                   color: Colors.white,
+                                   onPressed: () {},
+                              ),
+                              IconButton(
+                                   icon: Icon(Icons.settings),
+                                   color: Colors.white,
+                                   onPressed: () {},
+                              )
+                         ],
+                    ),
+               ),
+               // drawer: new SideDrawer(),  /// Side drawer menu
           );
      }
 }
@@ -125,7 +135,7 @@ class _MainDisplayState extends State<MainDisplay>
 
           timerState.controller = AnimationController(
                vsync: this,
-               duration: Duration(seconds: timerState.getTimeRemainingInSeconds()),
+               duration: Duration(seconds: timerState.getDurationInSeconds()),
           );
      }
 
@@ -155,18 +165,31 @@ class _MainDisplayState extends State<MainDisplay>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                          Padding(
-                              padding: EdgeInsets.all(20.0),
+                              padding: EdgeInsets.all(0.0),
+                         ),
+                         Padding(
+                              padding: EdgeInsets.all(50.0),
                               child: Stack(
                                    children: <Widget>[
-                                        timerRing(),
-                                        timerDisplayWidget(),
+                                        timerRing(),            /// Ring
+                                        timerDisplayWidget(),   /// Timer-text
                                    ],
                               ),
                          ),
                          Padding(
                               padding: EdgeInsets.all(20.0),
+                         ),
+                         Padding(
+                              padding: EdgeInsets.all(00.0),
                               child:
-                              new BottomPanel(Configuration.BUTTON_HORIZ_PADDING, timerState),
+                              new BottomButtons1(
+                                   Configuration.BUTTON_HORIZ_PADDING, timerState),
+                         ),
+                         Padding(
+                              padding: EdgeInsets.all(00.0),
+                              child:
+                              new BottomButtons2(
+                                   Configuration.BUTTON_HORIZ_PADDING, timerState),
                          )
                     ],
                ),
@@ -174,10 +197,12 @@ class _MainDisplayState extends State<MainDisplay>
      }
 
      String getTimerString() {
-          Duration duration = timerState.controller.duration * timerState.controller.value;
-          return '${(duration.inMinutes).toString().padLeft(2, '0')}'
-               ':'
-               '${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
+          Duration duration = timerState.controller.duration;
+          if (timerState.statusOfTimer != StatusOfTimer.STOPPED)
+               duration *= timerState.controller.value;
+          String mins = '${(duration.inMinutes).toString().padLeft(2, '0')}';
+          String seconds = '${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
+          return mins + ':' + seconds;
      }
 
      timerDisplayWidget() {
@@ -189,7 +214,7 @@ class _MainDisplayState extends State<MainDisplay>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                          Text(
-                              "Count Down",
+                              getStatusText(),
                               style: Theme.of(context).textTheme.subhead,
                          ),
                          AnimatedBuilder(
@@ -203,45 +228,6 @@ class _MainDisplayState extends State<MainDisplay>
                     ],
                ),
           );
-
-//          return new Row(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: <Widget>[
-//                    Container(
-//                         padding: EdgeInsets.all(8.0),
-//                         child: Column(
-//                              children: <Widget>[
-//                                   Text(
-//                                        timerState.getMinutes(),
-//                                        style: Theme.of(context).textTheme.display1,
-//                                   ),
-//                              ],
-//                         ),
-//                    ),
-//                    Container(
-//                         padding: EdgeInsets.all(8.0),
-//                         child: Column(
-//                              children: <Widget>[
-//                                   Text(
-//                                        ':',
-//                                        style: Theme.of(context).textTheme.display1,
-//                                   ),
-//                              ],
-//                         ),
-//                    ),
-//                    Container(
-//                         padding: EdgeInsets.all(8.0),
-//                         child: Column(
-//                              children: <Widget>[
-//                                   Text(
-//                                        timerState.getSeconds(),
-//                                        style: Theme.of(context).textTheme.display1,
-//                                   ),
-//                              ],
-//                         ),
-//                    ),
-//               ],
-//          );
      }
 
      timerRing() {
@@ -259,4 +245,26 @@ class _MainDisplayState extends State<MainDisplay>
                ),
           );
      }
+
+  String getStatusText() {
+       String statusText;
+       switch(timerState.statusOfTimer) {
+            case StatusOfTimer.PAUSED: {
+                 statusText = "Paused";
+            }
+            break;
+
+            case StatusOfTimer.RUNNING: {
+                 statusText = "Time remaining";
+            }
+            break;
+
+            case StatusOfTimer.STOPPED: {
+                 statusText = "Ready";
+            }
+            break;
+       }
+
+       return statusText;
+  }
 }
