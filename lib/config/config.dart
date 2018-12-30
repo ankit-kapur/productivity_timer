@@ -8,17 +8,29 @@ class Configuration {
 
      /// Timer text
      static const TIMER_COLOR = Colors.white;
-     static const double TIMER_FONT_SIZE = 95;
+     static const double TIMER_FONT_SIZE = 75;
      static const double BORDER_WIDTH_TIMER = 2.0;
      static const BORDER_COLOR_TIMER = Colors.black;
 
      /// Ring
-     static const RING_WIDTH = 9.0;
-     static const RING_RADIUS = 150.0;
-     static const RING_BORDER_OFFSET = 2.0;
+     static const RING_WIDTH = 11.0;
+     static const RING_RADIUS = 125.0;
+     static const RING_BORDER_OFFSET = 3.0;
      static const RING_BORDER_WIDTH = 1.3;
 
-     /// Types of timers
+     /// Buttons
+     static const double CONTROL_BUTTON_SIZE = 110;
+     static const double CONTROL_BUTTON_FONT_SIZE = 32;
+
+     /// Timer TYPES
+     static const double TIMER_TYPE_EMOJI_SIZE = 30;
+     static const double TIMER_TYPE_BUTTON_SIZE = 160;
+
+     /// Radial menu
+     static const RADIAL_MENU_RADIUS = 100.0;
+     static const int RADIAL_MENU_ANIMATION_DURATION_MSEC = 600;
+     static const int RADIAL_MENU_SELECTION_RING_DURATION_MSEC = 200;
+
      static const TIMER_DURATIONS_MAP = {
           TimerType.chilli : 10,
           TimerType.lime : 15,
@@ -26,16 +38,16 @@ class Configuration {
           TimerType.avocado : 45,
      };
      static const TIMER_EMOJI = {
-          TimerType.chilli : '🌶',
-          TimerType.lime : '🍋',
           TimerType.pomodoro : '🍅',
+          TimerType.lime : '🍋',
+          TimerType.chilli : '🌶',
           TimerType.avocado : '🥑',
+          TimerType.carrot : '🥕',
      };
 
      static timerThemeData() {
           return ThemeData(
 
-               /// Not being used. BG is an image now.
                canvasColor: Colors.white,
 
                /// Top panel
@@ -53,8 +65,8 @@ class Configuration {
                     900: Color(0xFF33691E),
                }),
 
-               /// Ring
-               indicatorColor: Colors.green,
+               /// Timer RING
+               indicatorColor: Colors.green[800],
 
                // Buttons
                buttonTheme: ButtonThemeData(
@@ -99,7 +111,7 @@ class Configuration {
                     ),
 
                     subhead: TextStyle(
-                         fontSize: 26,
+                         fontSize: 20,
                          fontFamily: 'Oswald',
                          color: Colors.white,
                     )
