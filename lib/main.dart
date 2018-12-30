@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:productivity_timer/bottom_panel.dart';
+import 'package:productivity_timer/control_buttons.dart';
 import 'package:productivity_timer/config/config.dart';
 import 'package:productivity_timer/dao/timer_state.dart';
 import 'package:productivity_timer/type_selection.dart';
@@ -220,7 +220,7 @@ class _MainDisplayState extends State<MainDisplay>
           return new CustomPaint(
               painter: TimerPainter(
             animation: timerState.controller,
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.white12,
             doneColor: Theme.of(context).indicatorColor,
           ));
         },

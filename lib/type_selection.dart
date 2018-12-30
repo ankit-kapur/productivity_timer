@@ -39,17 +39,6 @@ class _TypeSelectionState extends State<TypeSelection> {
     );
   }
 
-  /// When the timer-type button is clicked
-  // TODO: A panel should open up and allow the user to pick a type.
-  changeTimerType() {
-    setState(() {
-      if (this.timerState.timerType == TimerType.pomodoro)
-        this.timerState.changeTimerType(TimerType.lime);
-      else
-        this.timerState.changeTimerType(TimerType.pomodoro);
-    });
-  }
-
   String getEnumValue(TimerType type) {
     return type.toString().substring(type.toString().indexOf(".") + 1);
   }
@@ -58,35 +47,6 @@ class _TypeSelectionState extends State<TypeSelection> {
     /// Current type
     return Stack(
       children: <Widget>[
-
-//        /// TYPE button
-//        Container(
-//          width: 100,
-//          height: 100,
-//          padding: EdgeInsets.all(horizontalPadding),
-//          child: RawMaterialButton(
-//            onPressed: () => _timerTypeGlobalKey.currentState.reset(),
-//
-//            /// TODO remove: changeTimerType(),
-//            elevation: 7.0,
-//            fillColor: null,
-//            // Colors.white,
-//            textStyle: TextStyle(
-//              color: Colors.white,
-//            ),
-//            child: Text(
-//              Configuration.TIMER_EMOJI[this.timerState.timerType],
-//              style: TextStyle(
-//                fontSize: Configuration.TIMER_TYPE_EMOJI_SIZE,
-//              ),
-//            ),
-//
-//            /// Border on the button
-//            shape: CircleBorder(
-//              side: BorderSide(color: Colors.white, width: 3),
-//            ),
-//          ),
-//        ),
 
         /// RADIAL MENU
         Container(
@@ -132,7 +92,6 @@ class _TypeSelectionState extends State<TypeSelection> {
         ),
       ),
       iconColor: Colors.white,
-      backgroundColor: null,
       tooltip: TimerType.lime.toString(),
     ),
 
@@ -145,7 +104,6 @@ class _TypeSelectionState extends State<TypeSelection> {
         ),
       ),
       iconColor: Colors.white,
-      backgroundColor: null,
       tooltip: TimerType.chilli.toString(),
     ),
 

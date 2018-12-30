@@ -102,11 +102,7 @@ class RadialMenuCenterButton extends StatelessWidget {
       width: size,
       height: size,
       child: new Center(
-//        child: animatedIcon,
-
         child: RawMaterialButton(
-//          onPressed: () => _timerTypeGlobalKey.currentState.reset(),
-
           elevation: 7.0,
           fillColor: null,
           // Colors.white,
@@ -114,7 +110,7 @@ class RadialMenuCenterButton extends StatelessWidget {
             color: Colors.white,
           ),
           child: Text(
-            Configuration.TIMER_EMOJI[timerState.timerType],     /// TODO: Change to this ----> [this.timerState.timerType],
+            Configuration.TIMER_EMOJI[timerState.timerType],
             style: TextStyle(
               fontSize: Configuration.TIMER_TYPE_EMOJI_SIZE,
             ),

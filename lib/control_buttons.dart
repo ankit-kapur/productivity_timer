@@ -120,10 +120,6 @@ class _ControlButtonsState extends State<ControlButtons> {
   }
 
   resetButtonPressed() {
-    setState(() {
-      timerState.statusOfTimer = StatusOfTimer.STOPPED;
-      timerState.stopwatch.reset();
-      timerState.controller.reset();
-    });
+    timerState.resetState();
   }
 }

@@ -135,6 +135,7 @@ class RadialMenuState extends State<RadialMenu> with TickerProviderStateMixin {
 //          }
 
           // TODO:  Popup message [Yes/No] —— This will reset the time. Are you sure?
+          widget.timerState.resetState();
           widget.timerState.changeTimerType(widget.items[itemIndex].value);
 
           reset();
@@ -195,7 +196,7 @@ class RadialMenuState extends State<RadialMenu> with TickerProviderStateMixin {
                     isOpen: _isOpen,
                     onPressed: _isOpen ? _closeMenu : _openMenu,
                     openedColor: Theme.of(context).backgroundColor,
-                    openedRingColor: Theme.of(context).accentColor,
+                    openedRingColor: Theme.of(context).canvasColor,
                     closedRingColor: Theme.of(context).canvasColor,
                     timerState: widget.timerState,
                ),

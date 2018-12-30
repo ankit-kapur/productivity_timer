@@ -15,7 +15,7 @@ class Configuration {
      /// Ring
      static const RING_WIDTH = 11.0;
      static const RING_RADIUS = 125.0;
-     static const RING_BORDER_OFFSET = 3.0;
+     static const RING_BORDER_OFFSET = 3.3;
      static const RING_BORDER_WIDTH = 1.3;
 
      /// Buttons
@@ -23,7 +23,7 @@ class Configuration {
      static const double CONTROL_BUTTON_FONT_SIZE = 32;
 
      /// Timer TYPES
-     static const double TIMER_TYPE_EMOJI_SIZE = 30;
+     static const double TIMER_TYPE_EMOJI_SIZE = 25;
      static const double TIMER_TYPE_BUTTON_SIZE = 160;
 
      /// Radial menu
@@ -32,7 +32,8 @@ class Configuration {
      static const int RADIAL_MENU_SELECTION_RING_DURATION_MSEC = 200;
 
      static const TIMER_DURATIONS_MAP = {
-          TimerType.chilli : 10,
+          TimerType.chilli : 1,
+          TimerType.carrot : 10,
           TimerType.lime : 15,
           TimerType.pomodoro : 25,
           TimerType.avocado : 45,
